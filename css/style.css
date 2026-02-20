@@ -67,12 +67,10 @@ body {
     overflow-x: hidden;
     transition: background-color 0.4s ease;
 }
-.hero-text {
-  font-size: 13px;
-  line-height: 1.7;
-  opacity: 0.95;
-}
 
-.hero-text strong {
-  font-weight: 600;
+.msg-card.hero-text {
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.85;
+  white-space: normal;
 }
