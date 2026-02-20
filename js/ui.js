@@ -34,14 +34,28 @@ export function hideGlobalLoader() {
 }
 
 export function showProductModal(product) {
-    document.getElementById('modal-img').src = product.imageUrl || '';
-    document.getElementById('modal-title').textContent = product.name || '';
-    document.getElementById('modal-prices').textContent = product.price || '';
-    document.getElementById('modal-desc').innerHTML = product.desc || 'No description available.';
-    document.getElementById('modal-wa-btn').href = product.waLink || '#';
-    modal.classList.add('show');
-}
+  document.getElementById('modal-img').src = product.imageUrl || '';
+  document.getElementById('modal-title').textContent =
+    product.name || product.title || '';
+  document.getElementById('modal-prices').textContent =
+    product.price || '';
+  document.getElementById('modal-desc').innerHTML =
+    product.desc || 'No description available.';
 
+  const waBtn = document.getElementById('modal-wa-btn');
+  if (waBtn) {
+    waBtn.href =
+      product.waLink ||
+      product.whatsappLink ||
+      product.targetLink ||
+      '#';
+
+    waBtn.target = '_blank';
+    waBtn.rel = 'noopener noreferrer';
+  }
+
+  modal.classList.add('show');
+}
 export function initUI() {
     // Initial global loader timeout fail-safe
     setTimeout(hideGlobalLoader, 6000);
