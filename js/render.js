@@ -6,7 +6,9 @@ export function renderApps(apps) {
     
     apps.forEach((app, index) => {
         const el = document.createElement('a');
-        el.href = app.link || '#';
+        el.href = app.targetLink || '#';
+el.target = '_blank';
+el.rel = 'noopener noreferrer';
         el.className = 'item-card glass app-item stagger-card'; 
         el.style.animationDelay = `${index * 0.08}s`; 
         
@@ -17,8 +19,14 @@ export function renderApps(apps) {
         el.innerHTML = `
             <img src="${app.imageUrl || 'https://via.placeholder.com/50'}" class="item-icon" alt="Icon">
             <div class="item-info">
-                <div class="item-title">${app.name || 'App Name'}</div>
-                <div class="item-date">${app.date || 'Update'}</div>
+                <div class="item-title">${app.name || app.title || ''}</div>
+                <div class="item-date">
+  ${
+    app.updateDate?.toDate
+      ? app.updateDate.toDate().toLocaleDateString()
+      : app.updateDate || ''
+  }
+</div>
             </div>
             <div class="item-action">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -67,7 +75,9 @@ export function renderSocials(socials) {
            .sort((a, b) => (a.order || 0) - (b.order || 0))
            .forEach((social, index) => {
         const el = document.createElement('a');
-        el.href = social.url || '#';
+        el.href = social.targetLink || social.link || '#';
+el.target = '_blank';
+el.rel = 'noopener noreferrer'; 
         el.className = 'social-btn glass stagger-card';
         el.style.animationDelay = `${index * 0.08}s`;
         
