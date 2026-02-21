@@ -321,9 +321,20 @@ function selectFilter(category) {
         
         if (cat === 'all' || itemCategories.includes(cat)) {
             item.style.display = 'flex';
+            
+            // Me-restart animasi dengan menghilangkan class lalu memaksakan reflow DOM
+            item.classList.remove('stagger-card');
+            void item.offsetWidth; // Force Reflow agar animasi direset oleh browser
+            
+            // Mengatur urutan delay animasi berdasarkan item yang terlihat
+            item.style.animationDelay = `${visibleCount * 0.08}s`;
+            item.classList.add('stagger-card');
+            
             visibleCount++;
         } else {
             item.style.display = 'none';
+            // Lepas class kalau tidak lolos filter, agar reset ketika nanti dipanggil
+            item.classList.remove('stagger-card');
         }
     });
     
