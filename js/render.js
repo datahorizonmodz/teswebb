@@ -7,26 +7,56 @@ export function renderApps(apps) {
     apps.forEach((app, index) => {
         const el = document.createElement('a');
         el.href = app.targetLink || '#';
-el.target = '_blank';
-el.rel = 'noopener noreferrer';
+        el.target = '_blank';
+        el.rel = 'noopener noreferrer';
         el.className = 'item-card glass app-item stagger-card'; 
         el.style.animationDelay = `${index * 0.08}s`; 
         
         // Atribut untuk filter dan pencarian
-        el.dataset.category = (app.category || 'All').toLowerCase();
+        // Membaca category sebagai array sesuai data dari database
+        el.dataset.category = Array.isArray(app.category)
+            ? app.category.map(c => c.toLowerCase()).join(',')
+            : (app.category || 'all').toLowerCase();
+            
         el.dataset.name = app.name || '';
         
+        // 1. Menyiapkan Teks Tanggal
+        let dateString = '';
+        if (app.updateDate?.toDate) {
+            // Memformat menjadi seperti: "20 Feb 2026"
+            const dateObj = app.updateDate.toDate();
+            const day = dateObj.getDate();
+            const month = dateObj.toLocaleString('en-US', { month: 'short' });
+            const year = dateObj.getFullYear();
+            dateString = `${day} ${month} ${year}`;
+        } else if (app.updateDate) {
+            dateString = app.updateDate;
+        }
+
+        // 2. Menyiapkan Teks Category Display
+        let categoryDisplay = '';
+        if (Array.isArray(app.category) && app.category.length > 0) {
+             categoryDisplay = app.category.join(' - '); // Menggabungkan misal: Popular - Enhancer
+        } else if (typeof app.category === 'string' && app.category.toLowerCase() !== 'all' && app.category !== '') {
+             categoryDisplay = app.category;
+        }
+
+        // 3. Menggabungkan Tanggal dan Category
+        let dateCategoryHtml = dateString;
+        if (dateString && categoryDisplay) {
+            dateCategoryHtml += ` - ${categoryDisplay}`;
+        } else if (categoryDisplay) {
+            dateCategoryHtml = categoryDisplay;
+        }
+
         el.innerHTML = `
             <img src="${app.imageUrl || 'https://via.placeholder.com/50'}" class="item-icon" alt="Icon">
             <div class="item-info">
-                <div class="item-title">${app.name || app.title || ''}</div>
-                <div class="item-date">
-  ${
-    app.updateDate?.toDate
-      ? app.updateDate.toDate().toLocaleDateString()
-      : app.updateDate || ''
-  }
-</div>
+                <div class="item-title">
+                    ${app.name || app.title || ''}
+                    ${app.version ? `<span style="color: var(--text-muted); font-size: 0.85rem; font-weight: normal; margin-left: 6px;">${app.version}</span>` : ''}
+                </div>
+                <div class="item-date">${dateCategoryHtml}</div>
             </div>
             <div class="item-action">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -76,8 +106,8 @@ export function renderSocials(socials) {
            .forEach((social, index) => {
         const el = document.createElement('a');
         el.href = social.targetLink || social.link || '#';
-el.target = '_blank';
-el.rel = 'noopener noreferrer'; 
+        el.target = '_blank';
+        el.rel = 'noopener noreferrer'; 
         el.className = 'social-btn glass stagger-card';
         el.style.animationDelay = `${index * 0.08}s`;
         
