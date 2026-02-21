@@ -105,34 +105,26 @@ export function renderSocials(socials) {
            .sort((a, b) => (a.order || 0) - (b.order || 0))
            .forEach((social, index) => {
         const el = document.createElement('a');
+        // Fitur klik untuk diarahkan ke targetLink sudah ada dari awal
         el.href = social.targetLink || social.link || '#';
         el.target = '_blank';
         el.rel = 'noopener noreferrer'; 
-        el.className = 'social-card glass stagger-card';
+        el.className = 'social-btn glass stagger-card';
         el.style.animationDelay = `${index * 0.08}s`;
         
-        // Menambahkan properti CSS Flexbox untuk mengatur tata letak dengan benar
-        el.style.display = 'flex';
-        el.style.alignItems = 'center';
+        // Memodifikasi layout bawaan CSS agar elemen menyebar dari ujung ke ujung
         el.style.justifyContent = 'space-between';
-        el.style.padding = '12px 18px';
-        el.style.marginBottom = '12px';
-        el.style.textDecoration = 'none'; // Menghilangkan garis bawah link
-        el.style.color = '#ffffff'; // Mencegah tulisan menjadi warna biru default
+        el.style.padding = '8px 16px'; // Padding disesuaikan agar proporsional seperti di gambar
         
-        // Mempersiapkan fallback gambar jika url kosong / link gambar sudah mati
-        const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(social.name || 'Link')}&background=random&color=fff`;
-        const imgSrc = social.imageUrl || fallbackImg;
-        
-        // Membungkus logo & judul di kiri, dan panah di kanan
+        // Memasukkan imageUrl, Name, dan SVG panah (Arrow)
         el.innerHTML = `
             <div style="display: flex; align-items: center; gap: 16px;">
-                <img src="${imgSrc}" onerror="this.onerror=null;this.src='${fallbackImg}';" class="social-icon" alt="${social.name || 'Icon'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                <span class="social-name" style="font-weight: bold; font-size: 16px; text-transform: uppercase;">${social.name || 'Link'}</span>
+                <img src="${social.imageUrl || 'https://via.placeholder.com/36'}" alt="${social.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                <span style="font-weight: 700; font-size: 1.05rem; letter-spacing: 0.5px;">${social.name || 'Link'}</span>
             </div>
-            <span class="social-arrow" style="display: flex; align-items: center;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z"></path></svg>
-            </span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 11h12.17l-5.58-5.59L12 4l8 8-8 8-1.41-1.41L16.17 13H4v-2z"/>
+            </svg>
         `;
         container.appendChild(el);
     });
