@@ -56,40 +56,44 @@ export function showProductModal(product) {
 
   modal.classList.add('show');
 }
+
 export function initUI() {
-    // Initial global loader timeout fail-safe
-    setTimeout(hideGlobalLoader, 6000);
+  // Initial global loader timeout fail-safe
+  setTimeout(hideGlobalLoader, 6000);
 
-    // Theme toggle logic
-    themeBtn.addEventListener('click', () => {
-  const isDark = htmlTag.getAttribute('data-theme') === 'dark';
+  // ===== SET DEFAULT ICON ANIMATION =====
+  if (htmlTag.getAttribute('data-theme') === 'dark') {
+    themeIcon.classList.add('moon-swing');
+  } else {
+    themeIcon.classList.add('sun-rotate');
+  }
 
-  // animasi keluar
-  themeIcon.classList.add('icon-exit');
+  // Theme toggle logic
+  themeBtn.addEventListener('click', () => {
+    const isDark = htmlTag.getAttribute('data-theme') === 'dark';
 
-  setTimeout(() => {
-    if (isDark) {
-      // ke LIGHT
-      htmlTag.setAttribute('data-theme', 'light');
-      themeIcon.innerHTML = sunSvg;
+    themeIcon.classList.add('icon-exit');
 
-      themeIcon.classList.remove('moon-swing');
-      themeIcon.classList.add('sun-rotate');
-    } else {
-      // ke DARK
-      htmlTag.setAttribute('data-theme', 'dark');
-      themeIcon.innerHTML = moonSvg;
+    setTimeout(() => {
+      if (isDark) {
+        htmlTag.setAttribute('data-theme', 'light');
+        themeIcon.innerHTML = sunSvg;
 
-      themeIcon.classList.remove('sun-rotate');
-      themeIcon.classList.add('moon-swing');
-    }
+        themeIcon.classList.remove('moon-swing');
+        themeIcon.classList.add('sun-rotate');
+      } else {
+        htmlTag.setAttribute('data-theme', 'dark');
+        themeIcon.innerHTML = moonSvg;
 
-    // animasi masuk
-    themeIcon.classList.remove('icon-exit');
-    themeIcon.classList.add('icon-enter');
+        themeIcon.classList.remove('sun-rotate');
+        themeIcon.classList.add('moon-swing');
+      }
 
-  }, 200);
-});
+      themeIcon.classList.remove('icon-exit');
+      themeIcon.classList.add('icon-enter');
+    }, 200);
+  });
+}
 
     // Handle Window Resize and Load
     window.addEventListener('load', () => {
