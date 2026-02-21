@@ -34,19 +34,25 @@ export function showProductModal(product) {
   document.getElementById('modal-img').src = product.imageUrl || '';
   document.getElementById('modal-title').textContent =
     product.name || product.title || '';
-  document.getElementById('modal-prices').textContent =
-    product.price || '';
-  document.getElementById('modal-desc').innerHTML =
-    product.desc || 'No description available.';
+    
+  // 1. Ganti pembacaan harga & tambah struktur LIST HARGA
+  document.getElementById('modal-prices').innerHTML = `
+    <div style="font-weight: bold; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase;">LIST HARGA</div>
+    <ul style="text-align: left; padding-left: 20px; font-weight: normal; color: var(--text-main); font-size: 0.95rem;">
+      ${product.priceText || '<li>-</li>'}
+    </ul>
+  `;
 
+  // 2. Ganti pembacaan deskripsi & tambah struktur DESKRIPSI PRODUK
+  document.getElementById('modal-desc').innerHTML = `
+    <div style="font-weight: bold; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase;">DESKRIPSI PRODUK</div>
+    <p style="text-align: left;">${product.description || '-'}</p>
+  `;
+
+  // 3. Tombol Order via WhatsApp membaca whatsappLink dengan fallback targetLink
   const waBtn = document.getElementById('modal-wa-btn');
   if (waBtn) {
-    waBtn.href =
-      product.waLink ||
-      product.whatsappLink ||
-      product.targetLink ||
-      '#';
-
+    waBtn.href = product.whatsappLink || product.targetLink || '#';
     waBtn.target = '_blank';
     waBtn.rel = 'noopener noreferrer';
   }
