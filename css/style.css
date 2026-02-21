@@ -195,3 +195,33 @@ body {
 .nav-btn.active {
     touch-action: none; /* Helps prevent swipe actions on mobile when grabbing the indicator */
 }
+
+/* ========================================= */
+/* DESKTOP LAYOUT (min-width: 768px)         */
+/* ========================================= */
+@media (min-width: 768px) {
+    body {
+        /* Slightly darker outer background to frame the application */
+        background-color: #070a0f; 
+    }
+    [data-theme="light"] body {
+        background-color: #e0e4e8;
+    }
+    
+    .app-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        border-left: 1px solid var(--glass-border);
+        border-right: 1px solid var(--glass-border);
+        min-height: 100vh;
+        background-color: var(--bg);
+        box-shadow: 0 0 50px rgba(0,0,0,0.3);
+    }
+
+    /* Disable mobile drag indicator physics visually on desktop */
+    .nav-indicator.dragging {
+        transform: none !important;
+        box-shadow: none !important;
+        transition: none !important;
+    }
+}
