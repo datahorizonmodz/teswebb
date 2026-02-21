@@ -35,11 +35,19 @@ export function showProductModal(product) {
   document.getElementById('modal-title').textContent =
     product.name || product.title || '';
     
+  // Handle priceText as array or string
+  let priceHtml = '<li>-</li>';
+  if (Array.isArray(product.priceText) && product.priceText.length > 0) {
+    priceHtml = product.priceText.map(price => `<li>${price}</li>`).join('');
+  } else if (product.priceText) {
+    priceHtml = `<li>${product.priceText}</li>`;
+  }
+    
   // 1. Ganti pembacaan harga & tambah struktur LIST HARGA
   document.getElementById('modal-prices').innerHTML = `
     <div style="font-weight: bold; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase;">LIST HARGA</div>
-    <ul style="text-align: left; padding-left: 20px; font-weight: normal; color: var(--text-main); font-size: 0.95rem;">
-      ${product.priceText || '<li>-</li>'}
+    <ul class="modal-list" style="text-align: left; padding-left: 20px; font-weight: normal; color: var(--text-main); font-size: 0.95rem;">
+      ${priceHtml}
     </ul>
   `;
 
