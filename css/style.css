@@ -111,10 +111,9 @@ body {
   50%  { transform: rotate(10deg); }
   100% { transform: rotate(-10deg); }
 }
-/* Tambahkan ini di style.css untuk mengatur animasi button */
+
 .theme-btn {
-    position: relative; /* Wajib agar child absolute mengikuti kotak ini */
-    /* style lain biarkan seperti semula */
+    position: relative; 
 }
 
 /* ===== WRAPPER TRANSISI (FADE IN/OUT & SCALE) ===== */
@@ -124,7 +123,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Transisi berjalan BERSAMAAN selama 0.5 detik secara mulus */
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
 }
 
@@ -134,13 +132,13 @@ body {
     transform-origin: center;
 }
 
-/* ===== ANIMASI CONTINUOUS (BERPUTAR / MENGAYUN SETIAP SAAT) ===== */
+/* ===== ANIMASI CONTINUOUS ===== */
 .anim-sun {
-    animation: sunSpin 12s linear infinite; /* Putar searah jarum jam terus menerus */
+    animation: sunSpin 12s linear infinite; 
 }
 
 .anim-moon {
-    animation: moonSwing 4s ease-in-out infinite; /* Ayun kiri kanan terus menerus */
+    animation: moonSwing 4s ease-in-out infinite;
 }
 
 @keyframes sunSpin {
@@ -161,7 +159,7 @@ body {
 
 [data-theme="dark"] .wrapper-sun {
     opacity: 0;
-    transform: scale(0.2) rotate(90deg); /* Matahari mengecil dan hilang */
+    transform: scale(0.2) rotate(90deg);
     pointer-events: none;
 }
 
@@ -173,7 +171,7 @@ body {
 
 [data-theme="light"] .wrapper-moon {
     opacity: 0;
-    transform: scale(0.2) rotate(-90deg); /* Bulan mengecil dan hilang */
+    transform: scale(0.2) rotate(-90deg); 
     pointer-events: none;
 }
 
@@ -182,7 +180,6 @@ body {
 /* ========================================= */
 
 .nav-indicator.dragging {
-    /* Override 'all' transition to disable 'left' transition during drag for instant follow */
     transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
     transform: scale(1.15) translateY(-2px);
     box-shadow: 0 6px 20px rgba(64, 167, 227, 0.4);
@@ -193,7 +190,7 @@ body {
 }
 
 .nav-btn.active {
-    touch-action: none; /* Helps prevent swipe actions on mobile when grabbing the indicator */
+    touch-action: none; 
 }
 
 /* ========================================= */
@@ -201,7 +198,6 @@ body {
 /* ========================================= */
 @media (min-width: 768px) {
     body {
-        /* Slightly darker outer background to frame the application */
         background-color: #070a0f; 
     }
     [data-theme="light"] body {
@@ -218,7 +214,6 @@ body {
         box-shadow: 0 0 50px rgba(0,0,0,0.3);
     }
 
-    /* Disable mobile drag indicator physics visually on desktop */
     .nav-indicator.dragging {
         transform: none !important;
         box-shadow: none !important;
@@ -230,7 +225,6 @@ body {
 /* DESKTOP FIXES (min-width: 1024px)         */
 /* ========================================= */
 @media (min-width: 1024px) {
-    /* 1. Full Width Desktop Layout */
     body {
         background-color: var(--bg) !important;
     }
@@ -248,17 +242,27 @@ body {
         border-radius: 0 !important;
     }
 
-    /* 2. Floating Navigation vs Product Modal */
+    /* 2. Header Full Width Desktop */
+    header {
+        max-width: 100% !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 1. Floating Navigation Blur & Hide Behind Modal */
     body.modal-open .bottom-nav-wrapper {
         z-index: 1 !important;
         pointer-events: none !important;
-        filter: blur(8px) !important;
-        opacity: 0.5 !important;
+        filter: blur(12px) !important;
+        opacity: 0.3 !important;
         transition: filter 0.3s ease, opacity 0.3s ease, z-index 0.3s ease;
     }
 
-    body.modal-open .modal-overlay {
-        z-index: 9999 !important; 
+    .modal-overlay {
+        z-index: 99999 !important; /* Memastikan modal di atas segalanya */
     }
 
     /* 3 & 4. Desktop Modal UX & Scrolling Bug */
@@ -270,9 +274,9 @@ body {
         bottom: auto !important;
         max-width: 600px !important;
         width: 90% !important;
-        max-height: 85vh !important;
+        max-height: 80vh !important; /* Batas tinggi modal agar scroll aktif */
         display: flex !important;
-        flex-direction: column;
+        flex-direction: column !important;
         border-radius: 24px !important;
         transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease !important;
     }
@@ -283,29 +287,40 @@ body {
 
     .modal-scroll-wrapper {
         flex: 1 1 auto !important;
-        min-height: 0 !important;
+        min-height: 0 !important; /* Penting agar flex bisa memicu scroll */
+        display: flex !important;
+        flex-direction: column !important;
         overflow: hidden !important;
         position: relative;
     }
 
     .modal-scroll-area {
+        flex: 1 1 auto !important;
         overflow-y: auto !important;
         height: 100% !important;
-        max-height: none !important; /* Let flexbox handle the height constraints naturally */
+        max-height: none !important; 
         overscroll-behavior: contain;
-        padding-right: 12px !important;
+        padding-right: 18px !important; /* Jarak untuk scrollbar */
         scroll-behavior: smooth;
     }
 
-    /* Stylish Desktop Scrollbar */
+    /* Garis Scrolling / Custom Scrollbar (Desktop) */
     .modal-scroll-area::-webkit-scrollbar {
-        width: 8px;
+        width: 12px; /* Lebar scrollbar */
     }
     .modal-scroll-area::-webkit-scrollbar-track {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.03); /* Track samar di belakang */
+        border-radius: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
     .modal-scroll-area::-webkit-scrollbar-thumb {
-        background: var(--accent);
-        border-radius: 8px;
+        background-color: var(--accent-light); /* Warna biru menonjol */
+        border-radius: 12px;
+        border: 3px solid var(--card-bg); /* Efek terangkat (border sewarna background) */
+        background-clip: padding-box;
+    }
+    .modal-scroll-area::-webkit-scrollbar-thumb:hover {
+        background-color: var(--accent); /* Warna berubah saat digeser/dihover */
     }
 }
