@@ -31,33 +31,44 @@ export function hideGlobalLoader() {
 }
 
 export function showProductModal(product) {
+  // 1. Set Icon dan Title (Tetap Rata Tengah dari bawaan CSS)
   document.getElementById('modal-img').src = product.imageUrl || '';
-  document.getElementById('modal-title').textContent =
-    product.name || product.title || '';
+  document.getElementById('modal-title').textContent = product.name || product.title || '';
     
-  // Handle priceText as array or string
-  let priceHtml = '<li>-</li>';
+  // Format Array Harga menjadi list dengan strip "-" agar persis desain
+  let priceHtml = '';
   if (Array.isArray(product.priceText) && product.priceText.length > 0) {
-    priceHtml = product.priceText.map(price => `<li>${price}</li>`).join('');
+    priceHtml = product.priceText.map(price => `<div style="margin-bottom: 4px;">- ${price}</div>`).join('');
   } else if (product.priceText) {
-    priceHtml = `<li>${product.priceText}</li>`;
+    priceHtml = `<div style="margin-bottom: 4px;">- ${product.priceText}</div>`;
+  } else {
+    priceHtml = `<div style="margin-bottom: 4px;">-</div>`;
   }
     
-  // 1. Ganti pembacaan harga & tambah struktur LIST HARGA
-  document.getElementById('modal-prices').innerHTML = `
-    <div style="font-weight: bold; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase;">LIST HARGA</div>
-    <ul class="modal-list" style="text-align: left; padding-left: 20px; font-weight: normal; color: var(--text-main); font-size: 0.95rem;">
+  // 2. Set LIST HARGA (Dibuat Rata Kiri dengan override styling inline)
+  const modalPrices = document.getElementById('modal-prices');
+  modalPrices.style.textAlign = 'left'; 
+  modalPrices.style.marginTop = '24px'; 
+  modalPrices.innerHTML = `
+    <div style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">LIST HARGA</div>
+    <div style="font-weight: normal; color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">
       ${priceHtml}
-    </ul>
+    </div>
   `;
 
-  // 2. Ganti pembacaan deskripsi & tambah struktur DESKRIPSI PRODUK
-  document.getElementById('modal-desc').innerHTML = `
-    <div style="font-weight: bold; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase;">DESKRIPSI PRODUK</div>
-    <p style="text-align: left;">${product.description || '-'}</p>
+  // Sembunyikan judul h4 "Description" bawaan dari HTML agar tidak dobel
+  const descH4 = document.querySelector('.modal-section h4');
+  if (descH4) descH4.style.display = 'none';
+
+  // 3. Set DESKRIPSI PRODUK (Dibuat Rata Kiri)
+  const modalDesc = document.getElementById('modal-desc');
+  modalDesc.style.textAlign = 'left';
+  modalDesc.innerHTML = `
+    <div style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">DESKRIPSI PRODUK</div>
+    <div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;">${product.description || '-'}</div>
   `;
 
-  // 3. Tombol Order via WhatsApp membaca whatsappLink dengan fallback targetLink
+  // 4. Tombol Order via WhatsApp membaca whatsappLink dengan fallback targetLink
   const waBtn = document.getElementById('modal-wa-btn');
   if (waBtn) {
     waBtn.href = product.whatsappLink || product.targetLink || '#';
