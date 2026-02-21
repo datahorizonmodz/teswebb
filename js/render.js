@@ -18,7 +18,7 @@ export function renderApps(apps) {
             ? app.category.map(c => c.toLowerCase()).join(',')
             : (app.category || 'all').toLowerCase();
             
-        el.dataset.name = app.name || '';
+        el.dataset.name = app.name || app.title || '';
         
         // 1. Menyiapkan Teks Tanggal
         let dateString = '';
