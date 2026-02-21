@@ -70,7 +70,6 @@ export function initUI() {
     }
   });
 
-  // >>> INI KODE YANG KEMARIN TIDAK SENGAJA TERHAPUS <<<
   // Navigation Logic (Fungsi Klik Bottom Nav)
   navBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -230,18 +229,30 @@ function resumeFilterAutoScroll() {
     filterPauseTimer = setTimeout(() => { isDraggingFilter = false; }, 1000);
 }
 
+// LOGIKA FILTER DIPERBARUI MENDUKUNG ARRAY/MULTIPLE CATEGORY
 function selectFilter(category) {
     const cat = category.toLowerCase();
+    
+    // Update active class on filter buttons
     document.querySelectorAll('.filter-tag').forEach(t => {
         t.classList.toggle('active', t.dataset.cat.toLowerCase() === category.toLowerCase());
     });
+    
     let visibleCount = 0;
     document.querySelectorAll('.app-item').forEach(item => {
-        if (cat === 'all' || item.dataset.category === cat) {
+        // Karena dataset.category sekarang digabung dengan koma, kita pecah kembali jadi array
+        const itemCategories = item.dataset.category ? item.dataset.category.split(',') : [];
+        
+        // Cek apakah item mengandung filter yang dipilih
+        if (cat === 'all' || itemCategories.includes(cat)) {
             item.style.display = 'flex';
             visibleCount++;
-        } else item.style.display = 'none';
+        } else {
+            item.style.display = 'none';
+        }
     });
+    
+    // Show/Hide "No Results" text
     const hNoRes = document.getElementById('home-no-results');
     if (hNoRes) hNoRes.style.display = visibleCount === 0 ? 'block' : 'none';
 }
