@@ -48,7 +48,6 @@ export function showProductModal(product) {
   // 2. Set LIST HARGA (Dibuat Rata Kiri dengan override styling inline)
   const modalPrices = document.getElementById('modal-prices');
   modalPrices.style.textAlign = 'left'; 
-  modalPrices.style.marginTop = '24px'; 
   modalPrices.innerHTML = `
     <div style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">LIST HARGA</div>
     <div style="font-weight: normal; color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">
@@ -64,7 +63,7 @@ export function showProductModal(product) {
   const modalDesc = document.getElementById('modal-desc');
   modalDesc.style.textAlign = 'left';
   modalDesc.innerHTML = `
-    <div style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">DESKRIPSI PRODUK</div>
+    <div style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-bottom: 8px; margin-top: 16px; text-transform: uppercase; letter-spacing: 0.5px;">DESKRIPSI PRODUK</div>
     <div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;">${product.description || '-'}</div>
   `;
 
@@ -77,6 +76,46 @@ export function showProductModal(product) {
   }
 
   modal.classList.add('show');
+
+  // --- LOGIKA BARU: DETEKSI SCROLL & NOTIFIKASI ---
+  setTimeout(() => {
+    const scrollArea = document.getElementById('modal-scroll-area');
+    const scrollIndicator = document.getElementById('scroll-indicator');
+    const scrollShadow = document.getElementById('scroll-shadow');
+    
+    // Kembalikan scroll ke paling atas setiap buka modal
+    scrollArea.scrollTop = 0;
+
+    // Cek apakah kontennya melebihi tinggi container (butuh scroll)
+    const isScrollable = scrollArea.scrollHeight > scrollArea.clientHeight;
+
+    if (isScrollable) {
+        // Tampilkan indikator & bayangan jika butuh scroll
+        scrollIndicator.style.opacity = '1';
+        scrollShadow.style.opacity = '1';
+        scrollIndicator.style.transform = 'translateX(-50%) translateY(0)';
+    } else {
+        // Sembunyikan jika teksnya pendek
+        scrollIndicator.style.opacity = '0';
+        scrollShadow.style.opacity = '0';
+    }
+
+    // Dengarkan event saat user mulai men-scroll teks
+    scrollArea.onscroll = () => {
+        const scrollPos = scrollArea.scrollTop + scrollArea.clientHeight;
+        // Jika sudah di-scroll hampir sampai paling bawah
+        if (scrollPos >= scrollArea.scrollHeight - 15) {
+            scrollIndicator.style.opacity = '0';
+            scrollShadow.style.opacity = '0';
+            scrollIndicator.style.transform = 'translateX(-50%) translateY(10px)'; // Efek turun sedikit saat hilang
+        } else {
+            // Jika scroll ke atas lagi
+            scrollIndicator.style.opacity = '1';
+            scrollShadow.style.opacity = '1';
+            scrollIndicator.style.transform = 'translateX(-50%) translateY(0)';
+        }
+    };
+  }, 100); // Sedikit delay memastikan DOM selesai dirender pop-up
 }
 
 export function initUI() {
