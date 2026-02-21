@@ -7,13 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        /* 1. Import Font Quicksand */
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
         
         body {
-            font-family: 'Inter', sans-serif;
+            /* 2. Terapkan Quicksand secara global dengan default Reguler (400) */
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 400; 
             background-color: #0f1115; /* Datzon dark vibe */
             color: #ffffff;
             overflow-x: hidden;
+        }
+
+        /* 3. Aturan Typography untuk Admin: Judul = Semibold (600) */
+        h1, h2, h3, h4, h5, h6, 
+        .font-bold, .font-semibold {
+            font-weight: 600 !important; /* Timpa bawaan Tailwind agar maksimal ketebalannya 600 */
+        }
+
+        /* Memastikan teks label, paragraf, dan input tetap Reguler (400) atau mewarisi body */
+        p, span, label, input, textarea, select {
+            font-weight: 400;
+        }
+        
+        /* Pengecualian untuk text pada button agar tetap proporsional dan jelas */
+        button, .nav-btn {
+            font-weight: 600 !important;
         }
 
         /* Animations */
@@ -99,7 +118,7 @@
             
             <form id="loginForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Username</label>
+                    <label class="block text-sm text-gray-400 mb-2">Username</label>
                     <div class="relative">
                         <input type="password" id="loginUsername" class="w-full pl-4 pr-12 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 bg-[#1a1d24] text-white" placeholder="Enter username" autocomplete="off">
                         <button type="button" onclick="togglePassword('loginUsername', 'eyeIconUser')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition">
@@ -108,7 +127,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                    <label class="block text-sm text-gray-400 mb-2">Password</label>
                     <div class="relative">
                         <input type="password" id="loginPassword" class="w-full pl-4 pr-12 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 bg-[#1a1d24] text-white" placeholder="Enter password" autocomplete="off">
                         <button type="button" onclick="togglePassword('loginPassword', 'eyeIconPass')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition">
@@ -133,12 +152,12 @@
             <h1 class="text-3xl font-bold tracking-widest text-white">DATZON<span class="text-blue-500">.</span></h1>
             
             <nav class="flex bg-[#1a1d24] rounded-xl p-1 shadow-lg border border-gray-800">
-                <button onclick="switchTab('apps')" id="tab-apps" class="nav-btn px-6 py-2.5 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white">APPS</button>
-                <button onclick="switchTab('products')" id="tab-products" class="nav-btn px-6 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all">PRODUCTS</button>
-                <button onclick="switchTab('profiles')" id="tab-profiles" class="nav-btn px-6 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all">PROFILES</button>
+                <button onclick="switchTab('apps')" id="tab-apps" class="nav-btn px-6 py-2.5 rounded-lg text-sm transition-all bg-blue-600 text-white">APPS</button>
+                <button onclick="switchTab('products')" id="tab-products" class="nav-btn px-6 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-all">PRODUCTS</button>
+                <button onclick="switchTab('profiles')" id="tab-profiles" class="nav-btn px-6 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-all">PROFILES</button>
             </nav>
 
-            <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2 text-sm font-medium">
+            <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2 text-sm font-semibold">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </button>
         </header>
@@ -155,7 +174,7 @@
             <div class="bg-[#15181e] border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold text-gray-100"><i class="fas fa-mobile-alt text-blue-500 mr-2"></i> Manage Apps</h2>
-                    <select id="appSelector" onchange="loadAppForm()" class="px-4 py-2 rounded-lg text-sm font-medium cursor-pointer w-64">
+                    <select id="appSelector" onchange="loadAppForm()" class="px-4 py-2 rounded-lg text-sm cursor-pointer w-64">
                         <option value="NEW">-- CREATE NEW APP --</option>
                     </select>
                 </div>
@@ -196,7 +215,7 @@
                         </div>
 
                         <div class="flex items-center justify-between bg-[#1a1d24] p-4 rounded-lg border border-gray-800">
-                            <span class="text-sm text-gray-300 font-medium">Status (Is Active)</span>
+                            <span class="text-sm text-gray-300">Status (Is Active)</span>
                             <label class="flex items-center cursor-pointer relative">
                                 <input type="checkbox" id="app_isActive" class="sr-only toggle-checkbox" checked>
                                 <div class="toggle-label block w-14 h-8 rounded-full"></div>
@@ -212,7 +231,7 @@
                             <div class="w-full aspect-square max-h-48 mb-4 bg-[#0f1115] rounded-lg border border-dashed border-gray-600 flex items-center justify-center overflow-hidden group relative">
                                 <img id="app_imagePreview" src="https://via.placeholder.com/300?text=No+Image" class="w-full h-full object-contain object-center">
                                 <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm">
                                         <i class="fas fa-upload mr-2"></i> Upload New
                                         <input type="file" id="app_imageFile" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'app')">
                                     </label>
@@ -225,10 +244,10 @@
                         </div>
 
                         <div class="pt-6 flex flex-col gap-3 border-t border-gray-800 mt-auto">
-                            <button type="button" onclick="saveData('apps')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold transition flex justify-center items-center gap-2">
+                            <button type="button" onclick="saveData('apps')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition flex justify-center items-center gap-2">
                                 <i class="fas fa-save"></i> SAVE APP
                             </button>
-                            <button type="button" id="app_btnDelete" onclick="deleteData('apps')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg font-bold transition hidden flex justify-center items-center gap-2 border border-red-900/50">
+                            <button type="button" id="app_btnDelete" onclick="deleteData('apps')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg transition hidden flex justify-center items-center gap-2 border border-red-900/50">
                                 <i class="fas fa-trash-alt"></i> DELETE THIS CONTENT
                             </button>
                         </div>
@@ -244,7 +263,7 @@
             <div class="bg-[#15181e] border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold text-gray-100"><i class="fas fa-box-open text-blue-500 mr-2"></i> Manage Products</h2>
-                    <select id="productSelector" onchange="loadProductForm()" class="px-4 py-2 rounded-lg text-sm font-medium cursor-pointer w-64">
+                    <select id="productSelector" onchange="loadProductForm()" class="px-4 py-2 rounded-lg text-sm cursor-pointer w-64">
                         <option value="NEW">-- CREATE NEW PRODUCT --</option>
                     </select>
                 </div>
@@ -269,7 +288,7 @@
                         </div>
 
                         <div class="flex items-center justify-between bg-[#1a1d24] p-4 rounded-lg border border-gray-800">
-                            <span class="text-sm text-gray-300 font-medium">Status (Is Active)</span>
+                            <span class="text-sm text-gray-300">Status (Is Active)</span>
                             <label class="flex items-center cursor-pointer relative">
                                 <input type="checkbox" id="product_isActive" class="sr-only toggle-checkbox" checked>
                                 <div class="toggle-label block w-14 h-8 rounded-full"></div>
@@ -295,7 +314,7 @@
                             <div class="w-full aspect-square max-h-64 mb-4 bg-[#0f1115] rounded-lg border border-dashed border-gray-600 flex items-center justify-center overflow-hidden group relative">
                                 <img id="product_imagePreview" src="https://via.placeholder.com/300?text=No+Image" class="w-full h-full object-contain object-center">
                                 <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm">
                                         <i class="fas fa-upload mr-2"></i> Upload New
                                         <input type="file" id="product_imageFile" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'product')">
                                     </label>
@@ -308,10 +327,10 @@
                         </div>
 
                         <div class="pt-6 flex flex-col gap-3 border-t border-gray-800 mt-auto">
-                            <button type="button" onclick="saveData('products')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold transition flex justify-center items-center gap-2">
+                            <button type="button" onclick="saveData('products')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition flex justify-center items-center gap-2">
                                 <i class="fas fa-save"></i> SAVE PRODUCT
                             </button>
-                            <button type="button" id="product_btnDelete" onclick="deleteData('products')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg font-bold transition hidden flex justify-center items-center gap-2 border border-red-900/50">
+                            <button type="button" id="product_btnDelete" onclick="deleteData('products')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg transition hidden flex justify-center items-center gap-2 border border-red-900/50">
                                 <i class="fas fa-trash-alt"></i> DELETE THIS CONTENT
                             </button>
                         </div>
@@ -327,7 +346,7 @@
             <div class="bg-[#15181e] border border-gray-800 rounded-2xl p-6 md:p-8 shadow-2xl">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-xl font-bold text-gray-100"><i class="fas fa-user-circle text-blue-500 mr-2"></i> Manage Profiles</h2>
-                    <select id="profileSelector" onchange="loadProfileForm()" class="px-4 py-2 rounded-lg text-sm font-medium cursor-pointer w-64">
+                    <select id="profileSelector" onchange="loadProfileForm()" class="px-4 py-2 rounded-lg text-sm cursor-pointer w-64">
                         <option value="NEW">-- CREATE NEW PROFILE --</option>
                     </select>
                 </div>
@@ -352,7 +371,7 @@
                         </div>
 
                         <div class="flex items-center justify-between bg-[#1a1d24] p-4 rounded-lg border border-gray-800 mt-6">
-                            <span class="text-sm text-gray-300 font-medium">Status (Is Active)</span>
+                            <span class="text-sm text-gray-300">Status (Is Active)</span>
                             <label class="flex items-center cursor-pointer relative">
                                 <input type="checkbox" id="profile_isActive" class="sr-only toggle-checkbox" checked>
                                 <div class="toggle-label block w-14 h-8 rounded-full"></div>
@@ -368,7 +387,7 @@
                             <div class="w-full aspect-square max-h-48 mb-4 bg-[#0f1115] rounded-full mx-auto border border-dashed border-gray-600 flex items-center justify-center overflow-hidden group relative" style="max-width: 12rem;">
                                 <img id="profile_imagePreview" src="https://via.placeholder.com/300?text=No+Image" class="w-full h-full object-cover object-center">
                                 <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium">
+                                    <label class="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs">
                                         <i class="fas fa-upload"></i> Upload
                                         <input type="file" id="profile_imageFile" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'profile')">
                                     </label>
@@ -381,10 +400,10 @@
                         </div>
 
                         <div class="pt-6 flex flex-col gap-3 border-t border-gray-800 mt-auto">
-                            <button type="button" onclick="saveData('profiles')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-bold transition flex justify-center items-center gap-2">
+                            <button type="button" onclick="saveData('profiles')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg transition flex justify-center items-center gap-2">
                                 <i class="fas fa-save"></i> SAVE PROFILE
                             </button>
-                            <button type="button" id="profile_btnDelete" onclick="deleteData('profiles')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg font-bold transition hidden flex justify-center items-center gap-2 border border-red-900/50">
+                            <button type="button" id="profile_btnDelete" onclick="deleteData('profiles')" class="w-full bg-red-900/30 text-red-500 hover:bg-red-600 hover:text-white py-3 rounded-lg transition hidden flex justify-center items-center gap-2 border border-red-900/50">
                                 <i class="fas fa-trash-alt"></i> DELETE THIS CONTENT
                             </button>
                         </div>
@@ -829,4 +848,3 @@
     </script>
 </body>
 </html>
-
