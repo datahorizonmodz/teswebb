@@ -258,8 +258,18 @@ function triggerFilter(query) {
     document.querySelectorAll('.app-item').forEach(item => {
         if(item.dataset.name.toLowerCase().includes(query)) {
             item.style.display = 'flex';
+            
+            // Me-restart animasi saat search muncul
+            item.classList.remove('stagger-card');
+            void item.offsetWidth; 
+            item.style.animationDelay = `${homeVisible * 0.08}s`;
+            item.classList.add('stagger-card');
+            
             homeVisible++;
-        } else item.style.display = 'none';
+        } else {
+            item.style.display = 'none';
+            item.classList.remove('stagger-card');
+        }
     });
     const hNoRes = document.getElementById('home-no-results');
     if (hNoRes) hNoRes.style.display = (homeVisible === 0) ? 'block' : 'none';
@@ -268,8 +278,18 @@ function triggerFilter(query) {
     document.querySelectorAll('.store-item').forEach(item => {
         if(item.dataset.name.toLowerCase().includes(query)) {
             item.style.display = 'flex';
+            
+            // Me-restart animasi saat search muncul untuk item Store
+            item.classList.remove('stagger-card');
+            void item.offsetWidth; 
+            item.style.animationDelay = `${storeVisible * 0.08}s`;
+            item.classList.add('stagger-card');
+            
             storeVisible++;
-        } else item.style.display = 'none';
+        } else {
+            item.style.display = 'none';
+            item.classList.remove('stagger-card');
+        }
     });
     const sNoRes = document.getElementById('store-no-results');
     if (sNoRes) sNoRes.style.display = (storeVisible === 0) ? 'block' : 'none';
