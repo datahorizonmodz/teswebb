@@ -978,7 +978,7 @@ main {
     .bottom-nav-wrapper {
         top: 100px; /* Aligned immediately below the extended 80px header with a 20px gap */
         bottom: auto;
-        max-width: 350px;
+        max-width: 500px;
         width: 100%;
     }
 
