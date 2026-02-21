@@ -62,27 +62,34 @@ export function initUI() {
 
     // Theme toggle logic
     themeBtn.addEventListener('click', () => {
-        const isDark = htmlTag.getAttribute('data-theme') === 'dark';
-        if (isDark) {
-            htmlTag.setAttribute('data-theme', 'light');
-            themeIcon.innerHTML = sunSvg;
-        } else {
-            htmlTag.setAttribute('data-theme', 'dark');
-            themeIcon.innerHTML = moonSvg;
-        }
-    });
+  const isDark = htmlTag.getAttribute('data-theme') === 'dark';
 
-    // Navigation Logic
-    navBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            navBtns.forEach(b => b.classList.remove('active'));
-            pages.forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.target).classList.add('active');
-            updateIndicator(btn);
-            if (mainNav.classList.contains('nav-search-active')) closeSearch();
-        });
-    });
+  // animasi keluar
+  themeIcon.classList.add('icon-exit');
+
+  setTimeout(() => {
+    if (isDark) {
+      // ke LIGHT
+      htmlTag.setAttribute('data-theme', 'light');
+      themeIcon.innerHTML = sunSvg;
+
+      themeIcon.classList.remove('moon-swing');
+      themeIcon.classList.add('sun-rotate');
+    } else {
+      // ke DARK
+      htmlTag.setAttribute('data-theme', 'dark');
+      themeIcon.innerHTML = moonSvg;
+
+      themeIcon.classList.remove('sun-rotate');
+      themeIcon.classList.add('moon-swing');
+    }
+
+    // animasi masuk
+    themeIcon.classList.remove('icon-exit');
+    themeIcon.classList.add('icon-enter');
+
+  }, 200);
+});
 
     // Handle Window Resize and Load
     window.addEventListener('load', () => {
