@@ -111,10 +111,26 @@ export function renderSocials(socials) {
         el.className = 'social-card glass stagger-card';
         el.style.animationDelay = `${index * 0.08}s`;
         
+        // Menambahkan properti CSS Flexbox untuk mengatur tata letak dengan benar
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'space-between';
+        el.style.padding = '12px 18px';
+        el.style.marginBottom = '12px';
+        el.style.textDecoration = 'none'; // Menghilangkan garis bawah link
+        el.style.color = '#ffffff'; // Mencegah tulisan menjadi warna biru default
+        
+        // Mempersiapkan fallback gambar jika url kosong / link gambar sudah mati
+        const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(social.name || 'Link')}&background=random&color=fff`;
+        const imgSrc = social.imageUrl || fallbackImg;
+        
+        // Membungkus logo & judul di kiri, dan panah di kanan
         el.innerHTML = `
-            <img src="${social.imageUrl || 'https://via.placeholder.com/50'}" class="social-icon" alt="Icon" style="border-radius: 50%;">
-            <span class="social-name">${social.name || 'Link'}</span>
-            <span class="social-arrow">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <img src="${imgSrc}" onerror="this.onerror=null;this.src='${fallbackImg}';" class="social-icon" alt="${social.name || 'Icon'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <span class="social-name" style="font-weight: bold; font-size: 16px; text-transform: uppercase;">${social.name || 'Link'}</span>
+            </div>
+            <span class="social-arrow" style="display: flex; align-items: center;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z"></path></svg>
             </span>
         `;
