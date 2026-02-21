@@ -22,6 +22,12 @@ const filterCategories = ['Popular', 'Editing', 'Enhancer', 'Music', 'Film', 'An
 let isDraggingFilter = false;
 let filterPauseTimer;
 
+// Drag Navigation Variables
+let isDraggingIndicator = false;
+let dragStartX = 0;
+let indicatorInitialLeft = 0;
+let currentDragLeft = 0;
+
 export function hideGlobalLoader() {
     const loader = document.getElementById('global-loader');
     if (loader && !loader.classList.contains('hidden')) {
@@ -204,6 +210,16 @@ export function initUI() {
   // Modal Events
   closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+  // --- DRAGGABLE NAV INDICATOR EVENT LISTENERS ---
+  mainNav.addEventListener('mousedown', handleDragStart);
+  mainNav.addEventListener('touchstart', handleDragStart, { passive: true });
+
+  document.addEventListener('mousemove', handleDragMove);
+  document.addEventListener('touchmove', handleDragMove, { passive: false });
+
+  document.addEventListener('mouseup', handleDragEnd);
+  document.addEventListener('touchend', handleDragEnd);
 }
 
 function updateIndicator(btn) {
@@ -313,4 +329,85 @@ function selectFilter(category) {
     
     const hNoRes = document.getElementById('home-no-results');
     if (hNoRes) hNoRes.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// =========================================
+// DRAG NAVIGATION INDICATOR FUNCTIONS
+// =========================================
+
+function handleDragStart(e) {
+    if (mainNav.classList.contains('nav-search-active')) return;
+
+    // We detect if the user started grabbing the currently active button.
+    const targetBtn = e.target.closest('.nav-btn');
+    if (targetBtn && targetBtn.classList.contains('active')) {
+        let clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+
+        isDraggingIndicator = true;
+        dragStartX = clientX;
+        indicatorInitialLeft = parseFloat(navIndicator.style.left || 0);
+        currentDragLeft = indicatorInitialLeft;
+
+        navIndicator.classList.add('dragging');
+        document.body.style.userSelect = 'none';
+    }
+}
+
+function handleDragMove(e) {
+    if (!isDraggingIndicator) return;
+
+    // Prevent default to stop scrolling/swiping gesture on mobile while dragging horizontally
+    if (e.type === 'touchmove') e.preventDefault();
+
+    let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    let deltaX = clientX - dragStartX;
+
+    currentDragLeft = indicatorInitialLeft + deltaX;
+
+    // Clamp indicator movement rigidly inside the nav bar boundaries
+    const navRect = mainNav.getBoundingClientRect();
+    const indicatorWidth = parseFloat(navIndicator.style.width || 72);
+    const minLeft = 4; // Add a tiny visual margin boundary 
+    const maxLeft = navRect.width - indicatorWidth - 4;
+
+    if (currentDragLeft < minLeft) currentDragLeft = minLeft;
+    if (currentDragLeft > maxLeft) currentDragLeft = maxLeft;
+
+    navIndicator.style.left = `${currentDragLeft}px`;
+}
+
+function handleDragEnd(e) {
+    if (!isDraggingIndicator) return;
+
+    isDraggingIndicator = false;
+    navIndicator.classList.remove('dragging');
+    document.body.style.userSelect = '';
+
+    // Calculate nearest nav button based on the center point of the released indicator
+    const navRect = mainNav.getBoundingClientRect();
+    const indicatorCenter = navRect.left + currentDragLeft + (parseFloat(navIndicator.style.width || 72) / 2);
+
+    // Get all actionable buttons (navigation links + search trigger)
+    const targets = Array.from(document.querySelectorAll('.nav-btn[data-target], #search-trigger'));
+    let closestBtn = null;
+    let minDistance = Infinity;
+
+    targets.forEach(btn => {
+        const btnRect = btn.getBoundingClientRect();
+        const btnCenter = btnRect.left + (btnRect.width / 2);
+        const distance = Math.abs(btnCenter - indicatorCenter);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestBtn = btn;
+        }
+    });
+
+    if (closestBtn) {
+        // Triggers exact functionality (navigating or opening search) via existing listeners
+        closestBtn.click();
+    } else {
+        // Fallback constraint
+        const activeBtn = document.querySelector('.nav-btn.active[data-target]');
+        updateIndicator(activeBtn);
+    }
 }
