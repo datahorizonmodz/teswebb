@@ -70,30 +70,33 @@ export function initUI() {
 
   // Theme toggle logic
   themeBtn.addEventListener('click', () => {
-    const isDark = htmlTag.getAttribute('data-theme') === 'dark';
+  const isDark = htmlTag.getAttribute('data-theme') === 'dark';
 
-    themeIcon.classList.add('icon-exit');
+  // bersihin animasi lama
+  themeIcon.classList.remove(
+    'sun-rotate',
+    'moon-swing',
+    'icon-enter',
+    'icon-exit'
+  );
 
-    setTimeout(() => {
-      if (isDark) {
-        htmlTag.setAttribute('data-theme', 'light');
-        themeIcon.innerHTML = sunSvg;
+  themeIcon.classList.add('icon-exit');
 
-        themeIcon.classList.remove('moon-swing');
-        themeIcon.classList.add('sun-rotate');
-      } else {
-        htmlTag.setAttribute('data-theme', 'dark');
-        themeIcon.innerHTML = moonSvg;
+  setTimeout(() => {
+    if (isDark) {
+      htmlTag.setAttribute('data-theme', 'light');
+      themeIcon.innerHTML = sunSvg;
+      themeIcon.classList.add('sun-rotate');
+    } else {
+      htmlTag.setAttribute('data-theme', 'dark');
+      themeIcon.innerHTML = moonSvg;
+      themeIcon.classList.add('moon-swing');
+    }
 
-        themeIcon.classList.remove('sun-rotate');
-        themeIcon.classList.add('moon-swing');
-      }
-
-      themeIcon.classList.remove('icon-exit');
-      themeIcon.classList.add('icon-enter');
-    }, 200);
-  });
-}
+    themeIcon.classList.remove('icon-exit');
+    themeIcon.classList.add('icon-enter');
+  }, 200);
+});
 
     // Handle Window Resize and Load
     window.addEventListener('load', () => {
