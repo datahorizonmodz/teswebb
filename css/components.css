@@ -994,27 +994,43 @@ main {
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Disable the pill indicator visually on Desktop */
+    /* MENGEMBALIKAN KAPSUL DINAMIS SEPERTI DI MOBILE */
     .nav-indicator {
-        display: none !important;
+        display: block !important;
+        top: 10px; /* Vertically center in 64px container ((64-44)/2) */
+        height: 44px;
+        border-radius: 22px;
+    }
+
+    /* Memastikan animasi hover/drag tidak dimatikan di Desktop */
+    .nav-indicator.dragging {
+        transform: scale(1.15) translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(64, 167, 227, 0.4) !important;
+        transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+    }
+
+    [data-theme="light"] .nav-indicator.dragging {
+        box-shadow: 0 6px 20px rgba(64, 167, 227, 0.5) !important;
     }
 
     /* Standardized nav buttons for Desktop UI */
     .nav-btn {
         border-radius: 20px;
-        margin: 0 4px;
+        margin: 0; /* Margin nol agar perhitungan JS tetap akurat seperti di mobile */
         transition: all 0.3s ease;
+        z-index: 1; /* Pastikan icon berada di atas indikator */
     }
 
     .nav-btn:hover {
         background: rgba(128, 128, 128, 0.1);
     }
 
+    /* Mengembalikan transparansi active karena kapsul berada di belakangnya */
     .nav-btn.active {
-        background: var(--accent);
-        color: var(--filter-active-text);
-        box-shadow: var(--shadow);
-        transform: scale(1.05);
+        background: transparent;
+        color: var(--nav-active-icon);
+        box-shadow: none;
+        transform: none;
     }
 
     /* Retain JS Search functionality spacing naturally */
