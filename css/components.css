@@ -423,7 +423,7 @@ main {
     width: 0 !important;
 }
 
-/* PRODUCT MODAL */
+/* PRODUCT MODAL - UPDATED SCROLL LOGIC */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -453,9 +453,12 @@ main {
     position: relative;
     transform: translateY(50px) scale(0.95);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    max-height: 85vh;
-    overflow-y: auto;
+    /* Set max height agar tidak ketutup bottom nav (sisakan ruang) */
+    max-height: calc(100vh - 120px); 
+    display: flex;
+    flex-direction: column; /* Ubah ke flex agar layout responsif */
     color: var(--text-main);
+    overflow: hidden; /* Pastikan corner rapi */
 }
 
 .modal-overlay.show .modal-content {
@@ -477,6 +480,7 @@ main {
     justify-content: center;
     cursor: pointer;
     transition: background 0.3s;
+    z-index: 10;
 }
 
 .modal-close:hover {
@@ -485,7 +489,8 @@ main {
 
 .modal-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    flex-shrink: 0; /* Header tidak ikut menyusut */
 }
 
 .modal-icon {
@@ -502,22 +507,41 @@ main {
     margin-bottom: 5px;
 }
 
+/* NEW: SCROLL WRAPPER & SCROLL AREA */
+.modal-scroll-wrapper {
+    position: relative;
+    flex: 1; /* Ambil sisa ruang tengah */
+    min-height: 0; /* Penting untuk flex-child scrolling */
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.1); /* Latar sedikit gelap (kontras) */
+    overflow: hidden;
+}
+
+[data-theme="light"] .modal-scroll-wrapper {
+    background: rgba(0,0,0,0.03); /* Penyesuaian mode terang */
+}
+
+.modal-scroll-area {
+    height: 100%;
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 50px; /* Ruang lebih di bawah untuk bayangan */
+    scrollbar-width: none; /* Firefox */
+}
+
+.modal-scroll-area::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
 .modal-prices {
     color: var(--accent-light);
     font-weight: 600;
-    margin-bottom: 15px;
 }
 
 .modal-section {
     margin-bottom: 16px;
-}
-
-.modal-section h4 {
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .modal-section p {
@@ -526,6 +550,52 @@ main {
     color: var(--text-main);
 }
 
+/* NEW: SCROLL SHADOW (Efek Gelap di bawah teks) */
+.scroll-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    /* Gradient yang menyatu dengan background */
+    background: linear-gradient(to bottom, transparent, var(--card-bg));
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Default sembunyi, diatur via JS */
+    z-index: 1;
+}
+
+/* NEW: SCROLL INDICATOR PILL */
+.scroll-indicator {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 20, 0.85);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255,255,255,0.15);
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+    opacity: 0; /* Default sembunyi, diatur via JS */
+    animation: bounceIndicator 2s infinite;
+}
+
+[data-theme="light"] .scroll-indicator {
+    background: rgba(255, 255, 255, 0.85);
+    color: #000;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Button WA tidak ikut ke-scroll, diam di bawah flex container */
 .wa-btn {
     display: flex;
     align-items: center;
@@ -538,7 +608,8 @@ main {
     border-radius: 12px;
     font-weight: bold;
     font-size: 1.05rem;
-    margin-top: 20px;
+    margin-top: 0;
+    flex-shrink: 0;
     box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
     transition: transform 0.3s;
 }
@@ -713,4 +784,10 @@ main {
 @keyframes cardEntrance {
     0% { opacity: 0; transform: translateY(40px) scale(0.92); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes bounceIndicator {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+    40% { transform: translateX(-50%) translateY(-4px); }
+    60% { transform: translateX(-50%) translateY(-2px); }
 }
