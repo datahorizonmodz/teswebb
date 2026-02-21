@@ -58,7 +58,7 @@ export function initUI() {
   // Initial global loader timeout fail-safe
   setTimeout(hideGlobalLoader, 6000);
 
-  // Theme toggle logic (KODE BARU LEBIH SIMPLE & TIDAK BIKIN GETER)
+  // Theme toggle logic (KODE ANIMASI MULUS)
   themeBtn.addEventListener('click', () => {
     const isDark = htmlTag.getAttribute('data-theme') === 'dark';
     
@@ -68,6 +68,21 @@ export function initUI() {
     } else {
       htmlTag.setAttribute('data-theme', 'dark');
     }
+  });
+
+  // >>> INI KODE YANG KEMARIN TIDAK SENGAJA TERHAPUS <<<
+  // Navigation Logic (Fungsi Klik Bottom Nav)
+  navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+          navBtns.forEach(b => b.classList.remove('active'));
+          pages.forEach(p => p.classList.remove('active'));
+          
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.target).classList.add('active');
+          
+          updateIndicator(btn);
+          if (mainNav.classList.contains('nav-search-active')) closeSearch();
+      });
   });
 
   // Handle Window Resize and Load
