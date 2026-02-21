@@ -108,11 +108,15 @@ export function renderSocials(socials) {
         el.href = social.targetLink || social.link || '#';
         el.target = '_blank';
         el.rel = 'noopener noreferrer'; 
-        el.className = 'social-btn glass stagger-card';
+        el.className = 'social-card glass stagger-card';
         el.style.animationDelay = `${index * 0.08}s`;
         
         el.innerHTML = `
-            <span>${social.name || 'Link'}</span>
+            <img src="${social.imageUrl || 'https://via.placeholder.com/50'}" class="social-icon" alt="Icon" style="border-radius: 50%;">
+            <span class="social-name">${social.name || 'Link'}</span>
+            <span class="social-arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z"></path></svg>
+            </span>
         `;
         container.appendChild(el);
     });
