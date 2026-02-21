@@ -91,6 +91,7 @@ export function showProductModal(product) {
   }
 
   modal.classList.add('show');
+  document.body.classList.add('modal-open');
 
   // --- LOGIKA BARU: DETEKSI SCROLL & NOTIFIKASI ---
   setTimeout(() => {
@@ -228,8 +229,20 @@ export function initUI() {
   }
 
   // Product Modal Events
-  if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-  if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+  if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', () => {
+          modal.classList.remove('show');
+          document.body.classList.remove('modal-open');
+      });
+  }
+  if (modal) {
+      modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+              modal.classList.remove('show');
+              document.body.classList.remove('modal-open');
+          }
+      });
+  }
 
   // Admin Login Modal Events
   if (closeLoginModal) {
