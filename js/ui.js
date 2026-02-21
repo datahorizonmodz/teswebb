@@ -3,7 +3,6 @@ import { executeMusicCommand } from "./music.js";
 // DOM Elements
 const htmlTag = document.documentElement;
 const themeBtn = document.getElementById('theme-btn');
-const themeIcon = document.getElementById('theme-icon');
 const navBtns = document.querySelectorAll('.nav-btn[data-target]');
 const pages = document.querySelectorAll('.page');
 const navIndicator = document.getElementById('nav-indicator');
@@ -19,8 +18,6 @@ const closeModalBtn = document.getElementById('close-modal');
 
 // Constants
 const filterCategories = ['Popular', 'Editing', 'Enhancer', 'Music', 'Film', 'Anime'];
-const sunSvg = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
-const moonSvg = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path><path d="M3 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="currentColor"/>`;
 
 let isDraggingFilter = false;
 let filterPauseTimer;
@@ -61,99 +58,74 @@ export function initUI() {
   // Initial global loader timeout fail-safe
   setTimeout(hideGlobalLoader, 6000);
 
-  // ===== SET DEFAULT ICON ANIMATION =====
-  if (htmlTag.getAttribute('data-theme') === 'dark') {
-    themeIcon.classList.add('moon-swing');
-  } else {
-    themeIcon.classList.add('sun-rotate');
-  }
-
-  // Theme toggle logic
+  // Theme toggle logic (KODE BARU LEBIH SIMPLE & TIDAK BIKIN GETER)
   themeBtn.addEventListener('click', () => {
-  const isDark = htmlTag.getAttribute('data-theme') === 'dark';
-
-  // bersihin animasi lama
-  themeIcon.classList.remove(
-    'sun-rotate',
-    'moon-swing',
-    'icon-enter',
-    'icon-exit'
-  );
-
-  themeIcon.classList.add('icon-exit');
-
-  setTimeout(() => {
+    const isDark = htmlTag.getAttribute('data-theme') === 'dark';
+    
+    // Cukup ganti attributenya, CSS akan mengurus animasi crossfade-nya secara otomatis dan bersamaan
     if (isDark) {
       htmlTag.setAttribute('data-theme', 'light');
-      themeIcon.innerHTML = sunSvg;
-      themeIcon.classList.add('sun-rotate');
     } else {
       htmlTag.setAttribute('data-theme', 'dark');
-      themeIcon.innerHTML = moonSvg;
-      themeIcon.classList.add('moon-swing');
     }
+  });
 
-    themeIcon.classList.remove('icon-exit');
-    themeIcon.classList.add('icon-enter');
-  }, 200);
-});
+  // Handle Window Resize and Load
+  window.addEventListener('load', () => {
+      const activeBtn = document.querySelector('.nav-btn.active[data-target]');
+      setTimeout(() => updateIndicator(activeBtn), 300);
+      buildFilters();
+  });
+  
+  window.addEventListener('resize', () => {
+      const activeBtn = document.querySelector('.nav-btn.active[data-target]');
+      updateIndicator(activeBtn);
+  });
 
-    // Handle Window Resize and Load
-    window.addEventListener('load', () => {
-        const activeBtn = document.querySelector('.nav-btn.active[data-target]');
-        setTimeout(() => updateIndicator(activeBtn), 300);
-        buildFilters();
-    });
-    
-    window.addEventListener('resize', () => {
-        const activeBtn = document.querySelector('.nav-btn.active[data-target]');
-        updateIndicator(activeBtn);
-    });
+  // Search Logic
+  searchTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mainNav.classList.contains('nav-search-active')) {
+          if (executeMusicCommand(searchInput.value)) {
+              triggerExistingSearchClose();
+          }
+          return;
+      }
+      mainNav.classList.add('nav-search-active');
+      updateIndicator(null);
+      setTimeout(() => searchInput.focus(), 300);
+  });
 
-    // Search Logic
-    searchTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (mainNav.classList.contains('nav-search-active')) {
-            if (executeMusicCommand(searchInput.value)) {
-                triggerExistingSearchClose();
-            }
-            return;
-        }
-        mainNav.classList.add('nav-search-active');
-        updateIndicator(null);
-        setTimeout(() => searchInput.focus(), 300);
-    });
+  searchClose.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); }, {passive: false});
+  searchClose.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); });
+  searchClose.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); });
+  
+  document.addEventListener('click', (e) => {
+      if (mainNav.classList.contains('nav-search-active') && !searchWrapper.contains(e.target)) closeSearch();
+  });
+  
+  searchWrapper.addEventListener('click', (e) => e.stopPropagation());
+  searchInput.addEventListener('input', (e) => triggerFilter(e.target.value.toLowerCase()));
 
-    searchClose.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); }, {passive: false});
-    searchClose.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); });
-    searchClose.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); closeSearch(); });
-    
-    document.addEventListener('click', (e) => {
-        if (mainNav.classList.contains('nav-search-active') && !searchWrapper.contains(e.target)) closeSearch();
-    });
-    
-    searchWrapper.addEventListener('click', (e) => e.stopPropagation());
-    searchInput.addEventListener('input', (e) => triggerFilter(e.target.value.toLowerCase()));
+  searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+          if (executeMusicCommand(searchInput.value)) triggerExistingSearchClose();
+      }
+  });
 
-    searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            if (executeMusicCommand(searchInput.value)) triggerExistingSearchClose();
-        }
-    });
+  // Filters Interaction
+  if(filterContainer) {
+      filterContainer.addEventListener('touchstart', pauseFilterAutoScroll, {passive: true});
+      filterContainer.addEventListener('mousedown', pauseFilterAutoScroll);
+      filterContainer.addEventListener('touchend', resumeFilterAutoScroll);
+      filterContainer.addEventListener('mouseup', resumeFilterAutoScroll);
+      filterContainer.addEventListener('mouseleave', resumeFilterAutoScroll);
+      filterContainer.addEventListener('wheel', pauseFilterAutoScroll, {passive: true});
+  }
 
-    // Filters Interaction
-    if(filterContainer) {
-        filterContainer.addEventListener('touchstart', pauseFilterAutoScroll, {passive: true});
-        filterContainer.addEventListener('mousedown', pauseFilterAutoScroll);
-        filterContainer.addEventListener('touchend', resumeFilterAutoScroll);
-        filterContainer.addEventListener('mouseup', resumeFilterAutoScroll);
-        filterContainer.addEventListener('mouseleave', resumeFilterAutoScroll);
-        filterContainer.addEventListener('wheel', pauseFilterAutoScroll, {passive: true});
-    }
-
-    // Modal Events
-    closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+  // Modal Events
+  closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
 }
 
 // Local helper functions
