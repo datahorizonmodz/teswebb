@@ -16,6 +16,16 @@ const filterTrack = document.getElementById('filter-track');
 const modal = document.getElementById('product-modal');
 const closeModalBtn = document.getElementById('close-modal');
 
+// Admin Login DOM Elements
+const loginModal = document.getElementById('login-modal');
+const loginBox = document.getElementById('login-box');
+const closeLoginModal = document.getElementById('close-login-modal');
+const adminLoginForm = document.getElementById('admin-login-form');
+const adminUsername = document.getElementById('admin-username');
+const adminPassword = document.getElementById('admin-password');
+const toggleUserEye = document.getElementById('toggle-user-eye');
+const togglePassEye = document.getElementById('toggle-pass-eye');
+
 // Constants
 const filterCategories = ['Popular', 'Editing', 'Enhancer', 'Music', 'Film', 'Anime'];
 
@@ -170,7 +180,11 @@ export function initUI() {
   searchTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       if (mainNav.classList.contains('nav-search-active')) {
-          if (executeMusicCommand(searchInput.value)) {
+          const query = searchInput.value.trim().toLowerCase();
+          if (query === '/admin') {
+              triggerExistingSearchClose();
+              checkAdminAccess();
+          } else if (executeMusicCommand(searchInput.value)) {
               triggerExistingSearchClose();
           }
           return;
@@ -193,7 +207,13 @@ export function initUI() {
 
   searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-          if (executeMusicCommand(searchInput.value)) triggerExistingSearchClose();
+          const query = searchInput.value.trim().toLowerCase();
+          if (query === '/admin') {
+              triggerExistingSearchClose();
+              checkAdminAccess();
+          } else if (executeMusicCommand(searchInput.value)) {
+              triggerExistingSearchClose();
+          }
       }
   });
 
@@ -207,9 +227,56 @@ export function initUI() {
       filterContainer.addEventListener('wheel', pauseFilterAutoScroll, {passive: true});
   }
 
-  // Modal Events
-  closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+  // Product Modal Events
+  if (closeModalBtn) closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
+  if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+
+  // Admin Login Modal Events
+  if (closeLoginModal) {
+      closeLoginModal.addEventListener('click', () => loginModal.classList.remove('show'));
+  }
+  if (loginModal) {
+      loginModal.addEventListener('click', (e) => { if (e.target === loginModal) loginModal.classList.remove('show'); });
+  }
+
+  if (adminLoginForm) {
+      adminLoginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const u = adminUsername.value;
+          const p = adminPassword.value;
+
+          if (u === 'izindatzon' && p === 'qwert67') {
+              localStorage.setItem('datzon_admin_auth_expiry', Date.now() + (60 * 60 * 1000));
+              loginBox.classList.add('fade-out');
+              setTimeout(() => {
+                  window.location.href = 'admin.html';
+              }, 300);
+          } else {
+              loginBox.classList.remove('shake');
+              void loginBox.offsetWidth; // trigger reflow
+              loginBox.classList.add('shake');
+              adminUsername.value = '';
+              adminPassword.value = '';
+          }
+      });
+  }
+
+  // Setup Eye Toggle for Password/Username
+  function setupEyeToggle(btn, input) {
+      if(!btn || !input) return;
+      btn.addEventListener('click', () => {
+          if (input.type === 'password') {
+              input.type = 'text';
+              btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"></path></svg>`;
+          } else {
+              input.type = 'password';
+              btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+          }
+      });
+  }
+  
+  setupEyeToggle(toggleUserEye, adminUsername);
+  setupEyeToggle(togglePassEye, adminPassword);
 
   // --- DRAGGABLE NAV INDICATOR EVENT LISTENERS ---
   mainNav.addEventListener('mousedown', handleDragStart);
@@ -220,6 +287,21 @@ export function initUI() {
 
   document.addEventListener('mouseup', handleDragEnd);
   document.addEventListener('touchend', handleDragEnd);
+}
+
+// Check Admin Access Function
+function checkAdminAccess() {
+    const AUTH_KEY = 'datzon_admin_auth_expiry';
+    const expiry = localStorage.getItem(AUTH_KEY);
+    if (expiry && Date.now() < parseInt(expiry)) {
+        // Jika belum expired, langsung ke admin panel
+        window.location.href = 'admin.html';
+    } else {
+        // Jika belum login / sudah expired, tampilkan pop-up modal
+        loginBox.classList.remove('fade-out');
+        loginModal.classList.add('show');
+        adminUsername.focus();
+    }
 }
 
 function updateIndicator(btn) {
