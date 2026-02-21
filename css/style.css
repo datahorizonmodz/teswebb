@@ -74,3 +74,40 @@ body {
   opacity: 0.85;
   white-space: normal;
 }
+/* ===== THEME ICON BASE ===== */
+#theme-icon {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  transform-origin: center;
+}
+
+/* ===== EXIT & ENTER ===== */
+.icon-exit {
+  transform: scale(0.5);
+  opacity: 0;
+}
+
+.icon-enter {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ===== SUN ROTATION ===== */
+.sun-rotate {
+  animation: sunSpin 12s linear infinite;
+}
+
+@keyframes sunSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===== MOON SWING ===== */
+.moon-swing {
+  animation: moonSwing 4s ease-in-out infinite;
+}
+
+@keyframes moonSwing {
+  0%   { transform: rotate(-10deg); }
+  50%  { transform: rotate(10deg); }
+  100% { transform: rotate(-10deg); }
+}
