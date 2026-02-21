@@ -307,10 +307,8 @@ function checkAdminAccess() {
     const AUTH_KEY = 'datzon_admin_auth_expiry';
     const expiry = localStorage.getItem(AUTH_KEY);
     if (expiry && Date.now() < parseInt(expiry)) {
-        // Jika belum expired, langsung ke admin panel
         window.location.href = 'admin.html';
     } else {
-        // Jika belum login / sudah expired, tampilkan pop-up modal
         loginBox.classList.remove('fade-out');
         loginModal.classList.add('show');
         adminUsername.focus();
@@ -354,7 +352,6 @@ function triggerFilter(query) {
         if(item.dataset.name.toLowerCase().includes(query)) {
             item.style.display = 'flex';
             
-            // Me-restart animasi saat search muncul
             item.classList.remove('stagger-card');
             void item.offsetWidth; 
             item.style.animationDelay = `${homeVisible * 0.08}s`;
@@ -374,7 +371,6 @@ function triggerFilter(query) {
         if(item.dataset.name.toLowerCase().includes(query)) {
             item.style.display = 'flex';
             
-            // Me-restart animasi saat search muncul untuk item Store
             item.classList.remove('stagger-card');
             void item.offsetWidth; 
             item.style.animationDelay = `${storeVisible * 0.08}s`;
@@ -437,18 +433,15 @@ function selectFilter(category) {
         if (cat === 'all' || itemCategories.includes(cat)) {
             item.style.display = 'flex';
             
-            // Me-restart animasi dengan menghilangkan class lalu memaksakan reflow DOM
             item.classList.remove('stagger-card');
-            void item.offsetWidth; // Force Reflow agar animasi direset oleh browser
+            void item.offsetWidth; 
             
-            // Mengatur urutan delay animasi berdasarkan item yang terlihat
             item.style.animationDelay = `${visibleCount * 0.08}s`;
             item.classList.add('stagger-card');
             
             visibleCount++;
         } else {
             item.style.display = 'none';
-            // Lepas class kalau tidak lolos filter, agar reset ketika nanti dipanggil
             item.classList.remove('stagger-card');
         }
     });
@@ -464,7 +457,6 @@ function selectFilter(category) {
 function handleDragStart(e) {
     if (mainNav.classList.contains('nav-search-active')) return;
 
-    // We detect if the user started grabbing the currently active button.
     const targetBtn = e.target.closest('.nav-btn');
     if (targetBtn && targetBtn.classList.contains('active')) {
         let clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -482,7 +474,6 @@ function handleDragStart(e) {
 function handleDragMove(e) {
     if (!isDraggingIndicator) return;
 
-    // Prevent default to stop scrolling/swiping gesture on mobile while dragging horizontally
     if (e.type === 'touchmove') e.preventDefault();
 
     let clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
@@ -490,10 +481,9 @@ function handleDragMove(e) {
 
     currentDragLeft = indicatorInitialLeft + deltaX;
 
-    // Clamp indicator movement rigidly inside the nav bar boundaries
     const navRect = mainNav.getBoundingClientRect();
     const indicatorWidth = parseFloat(navIndicator.style.width || 72);
-    const minLeft = 4; // Add a tiny visual margin boundary 
+    const minLeft = 4; 
     const maxLeft = navRect.width - indicatorWidth - 4;
 
     if (currentDragLeft < minLeft) currentDragLeft = minLeft;
@@ -509,12 +499,11 @@ function handleDragEnd(e) {
     navIndicator.classList.remove('dragging');
     document.body.style.userSelect = '';
 
-    // Calculate nearest nav button based on the center point of the released indicator
     const navRect = mainNav.getBoundingClientRect();
     const indicatorCenter = navRect.left + currentDragLeft + (parseFloat(navIndicator.style.width || 72) / 2);
 
-    // Get all actionable buttons (navigation links + search trigger)
-    const targets = Array.from(document.querySelectorAll('.nav-btn[data-target], #search-trigger'));
+    // KUNCI PERBAIKAN: Menggunakan .search-wrapper sebagai target ukur agar titik tengahnya akurat
+    const targets = Array.from(document.querySelectorAll('.nav-btn[data-target], #search-wrapper'));
     let closestBtn = null;
     let minDistance = Infinity;
 
@@ -529,10 +518,18 @@ function handleDragEnd(e) {
     });
 
     if (closestBtn) {
-        // Triggers exact functionality (navigating or opening search) via existing listeners
-        closestBtn.click();
+        if (closestBtn.id === 'search-wrapper') {
+            // Jika yang terdekat adalah kotak search, trigger input search-nya
+            if (!mainNav.classList.contains('nav-search-active')) {
+                document.getElementById('search-trigger').click();
+            } else {
+                updateIndicator(null);
+            }
+        } else {
+            // Jika navigasi biasa, klik navigasinya
+            closestBtn.click();
+        }
     } else {
-        // Fallback constraint
         const activeBtn = document.querySelector('.nav-btn.active[data-target]');
         updateIndicator(activeBtn);
     }
