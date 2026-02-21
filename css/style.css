@@ -111,3 +111,68 @@ body {
   50%  { transform: rotate(10deg); }
   100% { transform: rotate(-10deg); }
 }
+/* Tambahkan ini di style.css untuk mengatur animasi button */
+.theme-btn {
+    position: relative; /* Wajib agar child absolute mengikuti kotak ini */
+    /* style lain biarkan seperti semula */
+}
+
+/* ===== WRAPPER TRANSISI (FADE IN/OUT & SCALE) ===== */
+.icon-wrapper {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Transisi berjalan BERSAMAAN selama 0.5 detik secara mulus */
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+}
+
+.icon-wrapper svg {
+    width: 24px;
+    height: 24px;
+    transform-origin: center;
+}
+
+/* ===== ANIMASI CONTINUOUS (BERPUTAR / MENGAYUN SETIAP SAAT) ===== */
+.anim-sun {
+    animation: sunSpin 12s linear infinite; /* Putar searah jarum jam terus menerus */
+}
+
+.anim-moon {
+    animation: moonSwing 4s ease-in-out infinite; /* Ayun kiri kanan terus menerus */
+}
+
+@keyframes sunSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes moonSwing {
+    0%, 100% { transform: rotate(-15deg); }
+    50%      { transform: rotate(15deg); }
+}
+
+/* ===== LOGIC TAMPILAN MODE GELAP ===== */
+[data-theme="dark"] .wrapper-moon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+[data-theme="dark"] .wrapper-sun {
+    opacity: 0;
+    transform: scale(0.2) rotate(90deg); /* Matahari mengecil dan hilang */
+    pointer-events: none;
+}
+
+/* ===== LOGIC TAMPILAN MODE TERANG ===== */
+[data-theme="light"] .wrapper-sun {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+[data-theme="light"] .wrapper-moon {
+    opacity: 0;
+    transform: scale(0.2) rotate(-90deg); /* Bulan mengecil dan hilang */
+    pointer-events: none;
+}
