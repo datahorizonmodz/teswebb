@@ -31,7 +31,7 @@
         }
         
         /* Pengecualian untuk text pada button agar tetap proporsional dan jelas */
-        button, .nav-btn {
+        button, .nav-btn, a {
             font-weight: 600 !important;
         }
 
@@ -157,9 +157,15 @@
                 <button onclick="switchTab('profiles')" id="tab-profiles" class="nav-btn px-6 py-2.5 rounded-lg text-sm text-gray-400 hover:text-white transition-all">PROFILES</button>
             </nav>
 
-            <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2 text-sm font-semibold">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <!-- Container Action Buttons (Logout & Home) -->
+            <div class="flex flex-col items-center md:items-end gap-3">
+                <button onclick="logout()" class="text-gray-400 hover:text-red-500 transition-colors flex items-center gap-2 text-sm font-semibold">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+                <a href="index.html" class="text-gray-400 hover:text-blue-500 transition-colors flex items-center gap-2 text-sm font-semibold">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
         </header>
 
         <!-- Loader overlay for data fetching -->
@@ -848,3 +854,4 @@
     </script>
 </body>
 </html>
+
