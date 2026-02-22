@@ -389,9 +389,15 @@ function triggerFilter(query) {
 function buildFilters() {
     const arr = ['All', ...filterCategories];
     const fullArr = [...arr, ...arr]; 
-    fullArr.forEach(cat => {
+    fullArr.forEach((cat, index) => {
         const btn = document.createElement('div');
         btn.className = `filter-tag ${cat === 'All' ? 'active' : ''}`;
+        
+        // --- LOGIKA BARU: Tandai elemen filter duplikat ---
+        if (index >= arr.length) {
+            btn.classList.add('duplicate-tag');
+        }
+        
         btn.textContent = cat;
         btn.dataset.cat = cat;
         btn.addEventListener('click', () => {
@@ -405,7 +411,8 @@ function buildFilters() {
 }
 
 function autoScrollFilter() {
-    if (!isDraggingFilter && filterContainer) {
+    // --- LOGIKA BARU: Hentikan auto-scroll jika di desktop (lebar layar >= 768px) ---
+    if (!isDraggingFilter && filterContainer && window.innerWidth < 768) {
         filterContainer.scrollLeft += 0.8; 
         if (filterContainer.scrollLeft >= filterTrack.scrollWidth / 2) filterContainer.scrollLeft = 0; 
     }
