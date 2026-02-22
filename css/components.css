@@ -227,7 +227,7 @@ main {
     gap: 12px;
     width: 100%;
     padding: 14px;
-    border-radius: 50px; !important;
+    border-radius: 50px !important;
     margin-bottom: 12px;
     background: var(--card-solid);
     color: var(--text-main);
@@ -976,16 +976,18 @@ main {
 
     /* TOP NAVIGATION (Replacing Bottom Floating Nav visually) */
     .bottom-nav-wrapper {
-        top: 100px; /* Aligned immediately below the extended 80px header with a 20px gap */
-        bottom: auto;
-        max-width: 500px;
+        top: 100px !important; /* Diatur fix ke atas pada desktop */
+        bottom: auto !important;
+        max-width: 320px !important; /* Dikecilkan kembali agar presisi 100% proporsional dengan kapsul 72px */
         width: 100%;
     }
 
     .bottom-nav {
         width: 100%;
-        height: 64px;
-        max-width: 500px;
+        height: 64px !important;
+        max-width: 320px !important;
+        border-radius: 32px !important;
+        padding: 0 16px;
         animation: desktopFadeIn 0.8s ease forwards !important;
     }
 
@@ -997,9 +999,10 @@ main {
     /* MENGEMBALIKAN KAPSUL DINAMIS SEPERTI DI MOBILE */
     .nav-indicator {
         display: block !important;
-        top: 10px; /* Vertically center in 64px container ((64-44)/2) */
-        height: 44px;
-        border-radius: 22px;
+        top: 10px !important; /* Center vertikal pada tinggi bar 64px */
+        height: 44px !important;
+        border-radius: 22px !important;
+        opacity: 1; 
     }
 
     /* Memastikan animasi hover/drag tidak dimatikan di Desktop */
@@ -1013,24 +1016,26 @@ main {
         box-shadow: 0 6px 20px rgba(64, 167, 227, 0.5) !important;
     }
 
-    /* Standardized nav buttons for Desktop UI */
+    /* BERSIHKAN SEMUA BACKGROUND STATIS PADA TOMBOL AGAR HANYA KAPSUL ASLI YANG TERLIHAT */
     .nav-btn {
-        border-radius: 20px;
-        margin: 0; /* Margin nol agar perhitungan JS tetap akurat seperti di mobile */
+        background: transparent !important;
+        border-radius: 20px !important;
+        margin: 0 !important;
+        box-shadow: none !important;
         transition: all 0.3s ease;
-        z-index: 1; /* Pastikan icon berada di atas indikator */
+        z-index: 1; 
     }
 
     .nav-btn:hover {
-        background: rgba(128, 128, 128, 0.1);
+        background: rgba(128, 128, 128, 0.1) !important;
     }
 
-    /* Mengembalikan transparansi active karena kapsul berada di belakangnya */
+    /* Hilangkan background color saat active, percayakan sepenuhnya pada kapsul nav-indicator di belakangnya */
     .nav-btn.active {
-        background: transparent;
-        color: var(--nav-active-icon);
-        box-shadow: none;
-        transform: none;
+        background: transparent !important;
+        color: var(--nav-active-icon) !important;
+        box-shadow: none !important;
+        transform: none !important;
     }
 
     /* Retain JS Search functionality spacing naturally */
@@ -1056,14 +1061,35 @@ main {
         justify-content: center;
     }
 
-    /* FILTER TRACK ENHANCEMENTS */
-    .filter-container::-webkit-scrollbar {
-        display: block;
-        height: 6px;
+    /* --- UPDATE FILTER TRACK UNTUK DESKTOP --- */
+    /* Menyembunyikan elemen filter ganda / duplikat yang ada khusus buat mobile */
+    .duplicate-tag {
+        display: none !important;
     }
-    .filter-container::-webkit-scrollbar-thumb {
-        background: var(--glass-border);
-        border-radius: 10px;
+
+    .filter-container {
+        display: flex;
+        justify-content: center;
+        overflow: visible; /* Matikan sistem scroll dari mobile */
+        margin-bottom: 32px;
+    }
+
+    .filter-container::-webkit-scrollbar {
+        display: none !important; /* Hilangkan scrollbar bawah */
+    }
+
+    .filter-track {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* Susun rapi kalau layarnya terlalu kecil */
+        width: 100%;
+        padding: 0;
+        gap: 12px;
+    }
+
+    .filter-tag {
+        font-size: 0.95rem; /* Ukuran elegan */
+        padding: 10px 24px;
     }
 
     /* MESSAGE CARD */
